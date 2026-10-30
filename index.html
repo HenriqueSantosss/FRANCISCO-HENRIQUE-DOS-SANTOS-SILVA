@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amazon.com.br</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.4.21/vue.global.prod.min.js"></script>
+</head>
+<body>
+  <div id="app">
+
+    <section v-if="tela == 'login'" class="login">
+      <a class="logo logo-preto" @click="tela = 'home'">amazon<small>.com.br</small></a>
+
+      <div class="login-caixa">
+        <h2>Digite um login ou crie uma conta</h2>
+        <label>Digite um número de celular ou e-mail</label>
+        <input type="text" v-model="email" :class="{ erro: erro }">
+        <p class="msg-erro" v-if="erro">Preencha este campo</p>
+        <button class="botao amarelo" @click="continuar">Continuar</button>
+        <p class="termos">Ao continuar, você concorda com as <a href="#">Condições de Uso</a> e a <a href="#">Notificação de privacidade</a> da Amazon.</p>
+        <a href="#" class="ajuda">Precisa de ajuda?</a>
+      </div>
+
+      <div class="login-rodape">
+        <div>
+          <a href="#">Condições de uso</a>
+          <a href="#">Notificação de privacidade</a>
+          <a href="#">Aviso de cookies</a>
+          <a href="#">Anúncios baseados em interesses</a>
+        </div>
+        <p>© 1996-2026, Amazon.com, Inc. ou suas afiliadas</p>
+      </div>
+    </section>
+
+    <div v-else>
+
+      <header class="topo">
+        <a class="logo" @click="tela = 'home'">amazon<small>.com.br</small></a>
+
+        <div class="entrega">
+          <span>A entrega será feita em Bela Vista 11300908</span>
+          <b>Atualizar CEP</b>
+        </div>
+
+        <div class="busca">
+          <select>
+            <option>Todos</option>
+            <option>Games</option>
+            <option>Livros</option>
+          </select>
+          <input type="text" placeholder="Pesquisar Amazon.com.br" v-model="busca">
+          <button @click="pesquisar">&#128269;</button>
+        </div>
+
+        <a class="topo-item" @click="tela = 'login'">Olá, faça seu login <b>Contas e Listas</b></a>
+        <a class="topo-item">Devoluções <b>e Pedidos</b></a>
+        <a class="topo-item">Carrinho <b>{{ carrinho }}</b></a>
+      </header>
+
+      <nav class="menu-nav">
+        <a class="todos" @click="menuAberto = true">&#9776; Todos</a>
+        <a v-for="item in nav" @click="abrirPagina(item)">{{ item }}</a>
+      </nav>
+
+      <div class="fundo-escuro" v-if="menuAberto" @click="menuAberto = false">
+        <aside class="menu-lateral" @click.stop>
+          <div class="menu-titulo">
+            <span>Olá, faça seu login</span>
+            <span class="fechar" @click="menuAberto = false">X</span>
+          </div>
+          <div class="menu-bloco" v-for="bloco in menu">
+            <h3>{{ bloco.titulo }}</h3>
+            <a href="#" v-for="link in bloco.links">{{ link }} <span>&rsaquo;</span></a>
+          </div>
+        </aside>
+      </div>
+
+      <main v-if="tela == 'home'">
+
+        <div class="slider" :style="{ backgroundImage: 'url(' + slides[slide].img + ')' }">
+          <button @click="anterior">&#8249;</button>
+          <div class="slider-texto">
+            <h1>{{ slides[slide].titulo }}</h1>
+            <span>{{ slides[slide].sub }}</span>
+          </div>
+          <button @click="proximo">&#8250;</button>
+        </div>
+
+        <section class="cards">
+          <div class="card" v-for="card in cards">
+            <h2>{{ card.titulo }}</h2>
+            <div class="itens">
+              <div class="item" v-for="item in card.itens">
+                <img :src="item.img">
+                <span>{{ item.nome }}</span>
+              </div>
+            </div>
+            <a href="#" class="link">{{ card.link }}</a>
+          </div>
+
+          <div class="card">
+            <h2>Acesse uma conta para ter a melhor experiência</h2>
+            <button class="botao amarelo" @click="tela = 'login'">Fazer login de forma segura</button>
+            <div class="hp">
+              <img src="img/hp.png">
+              <div>
+                <p>Cartucho de tinta HP 667...</p>
+                <p class="estrelas">&#9733;&#9733;&#9733;&#9733;&#9734; 14.785</p>
+                <span class="desconto">-5%</span>
+                <b class="preco">R$ 75,90</b>
+                <p class="riscado">De: 79,90</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="faixa pascoa">
+          <h2>Especial de Páscoa <a href="#">Veja mais</a></h2>
+          <div class="fotos">
+            <img v-for="foto in pascoa" :src="foto">
+          </div>
+        </section>
+
+        <section class="cards">
+          <div class="card card-grande">
+            <h2>Confira tudo sobre o Kindle</h2>
+            <img src="img/kindle.png">
+            <a href="#" class="link">Conheça o Kindle 11ª Geração</a>
+          </div>
+          <div class="card card-grande">
+            <h2>Gere o seu cartão sem anuidade</h2>
+            <img src="img/cartao.png">
+            <a href="#" class="link">5% da fatura de volta em pontos</a>
+          </div>
+        </section>
+
+        <section class="faixa">
+          <h2>Páscoa em Cozinha <a href="#">Veja mais em produtos</a></h2>
+          <div class="fotos">
+            <img v-for="foto in cozinha" :src="foto">
+          </div>
+        </section>
+
+      </main>
+
+      <main v-if="tela == 'produto'">
+
+        <div class="sub-nav">
+          <a v-for="item in subnav">{{ item }}</a>
+        </div>
+        <p class="caminho">Games e Consoles &rsaquo; Consoles &rsaquo; Nintendo Switch 2</p>
+
+        <section class="produto">
+          <div class="galeria">
+            <div class="miniaturas">
+              <img v-for="(foto, i) in fotos" :src="foto" :class="{ ativa: i == fotoAtual }" @mouseover="fotoAtual = i">
+            </div>
+            <img class="foto-principal" :src="fotos[fotoAtual]">
+          </div>
+
+          <div class="info">
+            <h1>Bundle Nintendo Switch 2 + Jogo Digital Mario Kart World - Modelo Nacional de Tomada</h1>
+            <a href="#" class="link">Visite a loja Nintendo</a>
+            <p class="estrelas">4,8 &#9733;&#9733;&#9733;&#9733;&#9733; <a href="#">2.076 avaliações</a></p>
+            <span class="selo">Escolha da Amazon</span>
+            <p class="pequeno">Mais de 400 compras no mês passado</p>
+            <hr>
+            <span class="desconto">-6%</span>
+            <span class="preco-grande">R$ 4.499,00</span>
+            <p class="riscado">De: R$4.799,90</p>
+            <p>Em até 12x R$ 375,10 sem juros <a href="#" class="link">Ver opções de pagamento</a></p>
+
+            <div class="icones">
+              <div><img src="img/cadeado.png">Pagamentos e Segurança</div>
+              <div><img src="img/caminhao.png">Enviado pela Amazon</div>
+              <div><img src="img/devolucao.png">Política de Devolução</div>
+            </div>
+
+            <p>Plataforma: <b>Nintendo Switch 2</b></p>
+            <div class="opcoes">
+              <div v-for="(op, i) in opcoes" :class="{ marcada: i == opcao }" @click="opcao = i">{{ op }}</div>
+            </div>
+            <p class="pequeno">Outros preços estão disponíveis em mais opções de compra, com ofertas que podem não ser elegíveis para o Amazon Prime.</p>
+          </div>
+
+          <aside class="compra">
+            <p class="preco-medio">R$ 4.499,00</p>
+            <p><a href="#" class="link">Entrega grátis:</a> <b>Quinta-feira, 19 de Março.</b> Se pedir dentro de 20 mins.</p>
+            <p>Enviar para José - Juazeiro do N... 63038345</p>
+            <p class="estoque">Em estoque</p>
+            <select v-model="qtd">
+              <option v-for="n in 5" :value="n">Quantidade: {{ n }}</option>
+            </select>
+            <button class="botao amarelo" @click="adicionar">Adicionar ao carrinho</button>
+            <button class="botao laranja" @click="comprar">Comprar agora</button>
+            <p class="pequeno">Enviado / Vendido: Amazon.com.br<br>Elegível para Devolução, Reembolso ou Substituição<br>Transação segura</p>
+            <b>Adicionar plano de seguro ou garantia:</b>
+            <label><input type="checkbox"> Garantia Estendida contra falhas e defeitos de 12 meses por R$ 95,55</label>
+            <label><input type="checkbox"> Garantia Estendida contra falhas e defeitos de 24 meses por R$ 143,32</label>
+            <hr>
+            <label><input type="checkbox"> Comprar este item como presente</label>
+            <button class="botao branco">Adicionar à lista</button>
+          </aside>
+        </section>
+
+        <section class="bloco">
+          <h2>Produtos relacionados comprados pelos clientes</h2>
+          <div class="relacionados">
+            <div class="relacionado" v-for="rel in relacionados">
+              <img :src="rel.img">
+              <p>{{ rel.nome }}</p>
+              <span class="pequeno">{{ rel.marca }}</span>
+              <p class="estrelas">&#9733;&#9733;&#9733;&#9733;&#9734;</p>
+              <b>R$ {{ rel.preco }}</b>
+              <p class="pequeno">Entrega GRATUITA quinta-feira, março 19</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="bloco">
+          <h2>Detalhes do produto</h2>
+          <p v-for="d in detalhes"><b>{{ d.nome }}:</b> {{ d.valor }}</p>
+          <h2>Descrição do produto</h2>
+          <p>O Nintendo Switch 2 representa a próxima evolução dos consoles, oferecendo uma experiência de jogo imersiva com gráficos aprimorados e funcionalidades inovadoras. Com resolução de até 4K na TV e suporte a HDR, os jogos ganham vida. Os novos controles Joy-Con 2 com conectores magnéticos e modo mouse expandem suas opções de interação. Conecte-se com amigos através do GameChat, compartilhando tela e fazendo chamadas de vídeo.</p>
+          <p>Prepare-se para a evolução da série Mario Kart em Mario Kart World para Nintendo Switch 2! O mundo inteiro é sua pista de corrida nesta experiência de mundo aberto, onde você pode correr livremente por paisagens deslumbrantes, enfrentando até 24 pilotos em emocionantes modos de jogo como Grande Prêmio e Eliminatória.</p>
+          <h2>Do fabricante</h2>
+          <img class="banner" src="img/banner1.png">
+          <img class="banner" src="img/banner2.png">
+        </section>
+
+        <section class="bloco avaliacoes">
+          <div class="av-resumo">
+            <h2>Avaliações de clientes</h2>
+            <p class="estrelas">&#9733;&#9733;&#9733;&#9733;&#9733; <b>4,8 de 5</b></p>
+            <p>2.076 avaliações globais</p>
+            <div class="barra" v-for="b in barras">
+              <a href="#">{{ b.estrelas }} estrelas</a>
+              <div class="barra-fundo"><div class="barra-cheia" :style="{ width: b.porcentagem + '%' }"></div></div>
+              <span>{{ b.porcentagem }}%</span>
+            </div>
+            <hr>
+            <h3>Avalie este produto</h3>
+            <p>Compartilhe seus pensamentos com outros clientes</p>
+            <button class="botao branco">Escreva uma avaliação</button>
+          </div>
+
+          <div class="av-lista">
+            <h3>Avaliações com imagens</h3>
+            <div class="av-fotos">
+              <img src="img/sw5.png">
+              <img src="img/sw6.png">
+              <img src="img/sw4.png">
+              <a href="#" class="link">Ver todas as fotos &rsaquo;</a>
+            </div>
+            <h3>Principais avaliações do Brasil</h3>
+            <p><b>matheus</b></p>
+            <p class="estrelas">&#9733;&#9733;&#9733;&#9733;&#9733; <b>Excelente Console!!!</b></p>
+            <p class="pequeno">Avaliado no Brasil em 9 de fevereiro de 2026 | Edition: Standard | Compra verificada</p>
+            <p>A entrega foi rápida, chegou bem embalado, caixa lacrada. Estou jogando a uns meses e curtindo muito, é um enorme upgrade do switch 1, loading mais rápido, visual melhorado. Tem muitos jogos já anunciados e mais por vir. Valeu muito a pena.</p>
+            <img class="av-foto" src="img/rev1.png">
+            <p class="pequeno">9 pessoas acharam isso útil</p>
+          </div>
+        </section>
+
+      </main>
+
+      <footer class="rodape">
+        <a href="#" class="voltar" @click.prevent="voltarAoTopo">Voltar ao início</a>
+        <div class="rodape-colunas">
+          <div v-for="col in rodape">
+            <h4>{{ col.titulo }}</h4>
+            <a href="#" v-for="link in col.links">{{ link }}</a>
+          </div>
+        </div>
+        <div class="rodape-meio">
+          <a class="logo">amazon<small>.com.br</small></a>
+          <span class="pais">Brasil</span>
+        </div>
+        <div class="rodape-final">
+          <p>Condições de Uso | Notificação de Privacidade | Cookies | Anúncios Baseados em Interesses | © 2021-2026 Amazon.com, Inc. ou suas afiliadas</p>
+          <p>Amazon Serviços de Varejo do Brasil Ltda. | CNPJ 15.436.940/0001-03</p>
+          <p>Av. Juscelino Kubitschek, 2041, Torre E, 18º andar - São Paulo CEP: 04543-011 | Fale conosco | ajuda-amazon@amazon.com.br</p>
+          <p>Formas de pagamento aceitas: cartões de crédito (Visa, MasterCard, Elo e American Express), cartões de débito (Visa e Elo), Boleto e Pix.</p>
+        </div>
+      </footer>
+
+    </div>
+  </div>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
